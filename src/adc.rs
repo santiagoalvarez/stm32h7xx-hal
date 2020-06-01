@@ -4,7 +4,13 @@ use crate::hal::blocking::delay::DelayUs;
 use core::marker::PhantomData;
 
 use crate::stm32;
-use crate::stm32::{ADC1, ADC2, ADC3, ADC3_COMMON};
+use crate::stm32::{ADC1, ADC2};
+#[cfg(not(feature = "stm32h7b3"))]
+use crate::stm32::ADC3;
+#[cfg(not(feature = "stm32h7b3"))]
+use crate::stm32::ADC3_COMMON as ADC_COMMON;
+#[cfg(feature = "stm32h7b3")]
+use crate::stm32::ADC12_COMMON as ADC_COMMON;
 
 use crate::delay::Delay;
 use crate::gpio::gpioa::{PA0, PA1, PA2, PA3, PA4, PA5, PA6, PA7};
@@ -23,7 +29,7 @@ const ADC_KER_CK_MAX: u32 = 36_000_000;
 #[cfg(feature = "revision_v")]
 const ADC_KER_CK_MAX: u32 = 100_000_000;
 
-pub type Resolution = crate::stm32::adc3::cfgr::RES_A;
+pub type Resolution = crate::stm32::adc1::cfgr::RES_A;
 trait NumberOfBits {
     fn number_of_bits(&self) -> u32;
 }
@@ -161,6 +167,7 @@ macro_rules! adc_pins {
     };
 }
 
+#[cfg(not(feature = "stm32h7b3"))]
 macro_rules! adc_internal {
     ($($input:ty => ($chan:expr, $en:ident)),+ $(,)*) => {
         $(
@@ -173,7 +180,7 @@ macro_rules! adc_internal {
                 /// ADC must be disabled.
                 pub fn enable(&mut self, _adc: &Adc<ADC3, Disabled>) {
 
-                    let common = unsafe { &*ADC3_COMMON::ptr() };
+                    let common = unsafe { &*ADC_COMMON::ptr() };
 
                     common.ccr.modify(|_, w| w.$en().enabled());
                 }
@@ -181,7 +188,7 @@ macro_rules! adc_internal {
                 /// ADC must be disabled.
                 pub fn disable(&mut self, _adc: &Adc<ADC3, Disabled>) {
 
-                    let common = unsafe { &*ADC3_COMMON::ptr() };
+                    let common = unsafe { &*ADC_COMMON::ptr() };
 
                     common.ccr.modify(|_, w| w.$en().disabled());
                 }
@@ -246,6 +253,7 @@ adc_pins!(ADC2,
           PA5<Analog> => 19,
 );
 
+#[cfg(not(feature = "stm32h7b3"))]
 adc_pins!(ADC3,
           // 0, 1 are Pxy_C pins
           PF9<Analog> => 2,
@@ -711,8 +719,14 @@ macro_rules! adc_hal {
     }
 }
 
+#[cfg(not(feature = "stm32h7b3"))]
 adc_hal!(
     ADC1: (adc1, Adc12, ADC12_COMMON),
     ADC2: (adc2, Adc12, ADC12_COMMON),
     ADC3: (adc3, Adc3, ADC3_COMMON),
+);
+#[cfg(feature = "stm32h7b3")]
+adc_hal!(
+    ADC1: (adc1, Adc12, ADC12_COMMON),
+    ADC2: (adc2, Adc12, ADC12_COMMON),
 );

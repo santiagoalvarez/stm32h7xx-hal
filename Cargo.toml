@@ -25,11 +25,13 @@ targets = ["thumbv7em-none-eabihf"]
 embedded-hal = "0.2.3"
 cortex-m = "^0.6.0"
 cortex-m-rt = "0.6.10"
-stm32h7 = "0.11.0"
 void = { version = "1.0.2", default-features = false }
 cast = { version = "0.2.2", default-features = false }
 nb = "0.1.2"
 paste = "0.1.10"
+
+[dependencies.stm32h7]
+git = "https://github.com/stm32-rs/stm32-rs-nightlies"
 
 [dependencies.bare-metal]
 version = "0.2.4"
@@ -60,6 +62,7 @@ stm32h743v = ["stm32h7/stm32h743v", "device-selected", "revision_v", "singlecore
 stm32h753v = ["stm32h7/stm32h753v", "device-selected", "revision_v", "singlecore"]
 stm32h750v = ["stm32h7/stm32h743v", "device-selected", "revision_v", "singlecore"]
 stm32h747cm7 = ["stm32h7/stm32h747cm7", "device-selected", "revision_v", "dualcore", "cm7", "dsi"]
+stm32h7b3 = ["stm32h7/stm32h7b3", "device-selected", "singlecore"]
 
 
 [profile.dev]

@@ -43,7 +43,9 @@ use core::mem::MaybeUninit;
 
 use crate::hal;
 use crate::stm32::{lptim1, lptim3};
-use crate::stm32::{LPTIM1, LPTIM2, LPTIM3, LPTIM4, LPTIM5};
+use crate::stm32::{LPTIM1, LPTIM2, LPTIM3};
+#[cfg(not(feature = "stm32h7b3"))]
+use crate::stm32::{LPTIM4, LPTIM5};
 use crate::stm32::{
     TIM1, TIM12, TIM13, TIM14, TIM15, TIM16, TIM17, TIM2, TIM3, TIM4, TIM5,
     TIM8,

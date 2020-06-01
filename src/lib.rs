@@ -19,6 +19,7 @@ compile_error!(
         stm32h750v
         stm32h747cm7
         stm32h757cm7
+        stm32h7b3
 "
 );
 
@@ -53,6 +54,10 @@ pub use stm32h7::stm32h753v as stm32;
 pub use stm32h7::stm32h747cm7 as stm32;
 #[cfg(any(feature = "stm32h757cm7",))]
 pub use stm32h7::stm32h757cm7 as stm32;
+
+#[cfg(any(feature = "stm32h7b3",))]
+pub use stm32h7::stm32h7b3 as stm32;
+
 // TODO(dualcore): soundness of PeripheralREC macro in rcc/rec.rs
 
 #[cfg(all(feature = "singlecore", feature = "dualcore"))]
